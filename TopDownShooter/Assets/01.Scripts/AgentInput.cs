@@ -8,6 +8,9 @@ public class AgentInput : MonoBehaviour
 {
     public UnityEvent<Vector2> OnMovementKeyPressed = null;
     public UnityEvent<Vector2> OnPointerPositionChanged = null;
+    public UnityEvent OnFireButtonPressed = null;
+    public UnityEvent OnFireButtonReleased = null;
+    private bool fireButtonDown = false;
 
     private Camera mainCam;
 
@@ -20,6 +23,27 @@ public class AgentInput : MonoBehaviour
     {
         GetKeyInput();
         GetPointerInput();
+        GetFireInput();
+    }
+
+    private void GetFireInput()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            if (fireButtonDown == false)
+            {
+                fireButtonDown = true;
+                OnFireButtonPressed?.Invoke();
+            }
+        }
+        else
+        {
+            if (fireButtonDown == true)
+            {
+                fireButtonDown = false;
+                OnFireButtonReleased?.Invoke();
+            }
+        }
     }
 
     private void GetPointerInput()
