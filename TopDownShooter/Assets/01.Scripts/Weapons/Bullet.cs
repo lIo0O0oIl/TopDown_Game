@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
 
     // SO 변경예정
     [SerializeField]
-    private BulletDataSO bulletDtat;
+    private BulletDtatSO bulletDtat;
 
     private float timeToLive = 0;
 
@@ -38,7 +38,7 @@ public class Bullet : MonoBehaviour
 
         isDead = true;      // 이렇게 하는 이유는 1개 이상의 물체에 출돌처리가 되지 않도록 하는 것임
 
-        InpactScript inpact = Instantiate(bulletDtat.ObstacleImpactPrefab, transform.position, QUaternion.identity);
+        ImpactScript inpact = Instantiate(bulletDtat.ObstacleImpactPrefab, transform.position, Quaternion.identity);
 
         // 여기에 스케일과 포지션 잡아주는 부분이 있어야 한다.
 

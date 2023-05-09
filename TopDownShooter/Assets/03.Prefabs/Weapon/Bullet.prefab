@@ -158,6 +158,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsEnemy: 0
-  timeToLive: 0
-  speed: 20
-  lifeTime: 1.5
+  bulletDtat: {fileID: 11400000, guid: e83332f1938387947ae2e4c5484f9601, type: 2}
