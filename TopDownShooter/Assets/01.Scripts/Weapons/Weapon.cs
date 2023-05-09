@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class Weapon : MonoBehaviour
 {
@@ -17,9 +18,14 @@ public class Weapon : MonoBehaviour
 
     #region 나중에 SO 로 빼야하는 부분
     [SerializeField]
-    private float weaponDelay = 0.25f;
+    private float weaponDelay = 0.25f, spreadAngle = 5f;        // + 탄퍼짐
     [SerializeField]
     private bool isAutoFire = true;
+    #endregion
+
+    #region 나중에 풀매니저로 처리할 부분
+    [SerializeField]
+    private Bullet bulletPrefab;
     #endregion
 
     private void Update()
@@ -59,7 +65,17 @@ public class Weapon : MonoBehaviour
 
     private void ShootBullet()
     {
-        Debug.Log("빵야빵야");
+        SpawnBullet(muzzleTrm.position);
+    }
+
+    private void SpawnBullet(Vector3 position)
+    {
+        Quaternion rotation = muzzleTrm.rotation;
+        float spread = Random.Range(-spreadAngle, spreadAngle);
+        rotation = rotation * Quaternion.Euler(0, 0, spread);
+
+        Bullet b = Instantiate(bulletPrefab, position, rotation);     // 머즐 회전량으로 포지션에 총알 생성
+        b.IsEnemy = false;      // 적 총알이 아니니까. 내꺼니까
     }
 
     public void TryShooting()

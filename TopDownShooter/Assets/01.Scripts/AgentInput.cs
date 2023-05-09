@@ -28,7 +28,7 @@ public class AgentInput : MonoBehaviour
 
     private void GetFireInput()
     {
-        if (Input.GetAxisRaw("Fire1") > 0)
+        if (Input.GetButtonDown("Fire1"))
         {
             if (fireButtonDown == false)
             {
@@ -36,7 +36,8 @@ public class AgentInput : MonoBehaviour
                 OnFireButtonPressed?.Invoke();
             }
         }
-        else
+
+        if (Input.GetButtonUp("Fire1"))
         {
             if (fireButtonDown == true)
             {
