@@ -125,4 +125,11 @@ public class Weapon : MonoBehaviour
         isShooting = false;
         OnStopShoot?.Invoke();
     }
+
+    public UnityEvent OnReloadComplete;
+
+    public void PlayReloadSound()
+    {
+        OnReloadComplete?.Invoke();
+    }
 }

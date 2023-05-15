@@ -26,6 +26,48 @@ public class AgentWeapon : MonoBehaviour
     }
     #endregion
 
+    #region 재장전 로직
+    private bool isReloading = false;
+    [SerializeField]
+    private ReloadBar reloadBar;
+
+    public void Reload()
+    {
+        if (isReloading == false && totalAmmo > 0 && weapon.AmmoFull == false)
+        {
+            isReloading = true;
+            weapon.StopShooting();
+            StartCoroutine(ReloadCoroutine());
+        }
+        else
+        {
+            Debug.Log("재장전 불가");
+        }
+    }
+
+    private IEnumerator ReloadCoroutine()
+    {
+        reloadBar.gameObject.SetActive(true);
+        float time = 0;
+        float reloadTime = 1f;
+        while(time <= reloadTime)
+        {
+            time += Time.deltaTime;
+            reloadBar.ReloadBaugeNormal(time / reloadTime);
+            yield return null;
+        }
+        reloadBar.gameObject.SetActive(false);
+
+        int reloadedAmmo = Mathf.Min(totalAmmo, weapon.EmptyBulletCount);
+        totalAmmo -= reloadedAmmo;
+        weapon.Ammo += reloadedAmmo;
+
+        weapon.PlayReloadSound();       // 리로드 사운드 재생
+        OnChangeTotalAmmo?.Invoke(weapon.Ammo, totalAmmo);
+        isReloading = false;
+    }
+    #endregion
+
     protected void Awake()
     {
         weaponRenderer = transform.Find("AssaultRifle").GetComponent<WeaponRenderer>();
@@ -55,7 +97,10 @@ public class AgentWeapon : MonoBehaviour
 
     public void Shoot()
     {
-        weapon?.TryShooting();
+        if (isReloading == false)
+        {
+            weapon?.TryShooting();
+        }
     }
 
     public void StopShooting()

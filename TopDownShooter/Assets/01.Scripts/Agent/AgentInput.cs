@@ -10,6 +10,7 @@ public class AgentInput : MonoBehaviour
     public UnityEvent<Vector2> OnPointerPositionChanged = null;
     public UnityEvent OnFireButtonPressed = null;
     public UnityEvent OnFireButtonReleased = null;
+    public UnityEvent OnReloadButtonPressed = null;     // 재장전 버튼 눌린경우
     private bool fireButtonDown = false;
 
     private Camera mainCam;
@@ -24,6 +25,15 @@ public class AgentInput : MonoBehaviour
         GetKeyInput();
         GetPointerInput();
         GetFireInput();
+        GetReloadInput();
+    }
+
+    private void GetReloadInput()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            OnReloadButtonPressed?.Invoke();
+        }
     }
 
     private void GetFireInput()

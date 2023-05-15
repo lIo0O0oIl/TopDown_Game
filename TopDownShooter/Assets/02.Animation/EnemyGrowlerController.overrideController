@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EnemyGrowlerController
+  m_Controller: {fileID: 9100000, guid: c00d23136051cb845a1b2d6012eff9c9, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 9f97aa52d8764c448ade7bb4640b02bf, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 10803424344572c4799e68659ea2a960, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 04be90647675f0542923772647306106, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ff6309c0e813f0b4b9350fad5f317fe7, type: 2}
