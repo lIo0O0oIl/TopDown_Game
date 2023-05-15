@@ -12,6 +12,8 @@ public class Weapon : MonoBehaviour
 
     public UnityEvent OnShoot;
     public UnityEvent OnStopShoot;
+    public UnityEvent OnShootNoAmmo;
+    public UnityEvent<int> OnChangeAmmo;
 
     protected bool isShooting = false;
     protected bool delayCoroutine = false;
@@ -21,12 +23,35 @@ public class Weapon : MonoBehaviour
     private float weaponDelay = 0.25f, spreadAngle = 5f;        // + 탄퍼짐
     [SerializeField]
     private bool isAutoFire = true;
+    [SerializeField]
+    private int maxAmmoCapacity = 40;
+    [SerializeField]
+    private int bulletCount = 1;    // 한발씩 쏘는 애
+    #endregion
+
+    #region 탄환수 관련 코드들
+    protected int ammo;
+    public int Ammo
+    {
+        get => ammo;
+        set
+        {
+            ammo = Mathf.Clamp(value, 0, maxAmmoCapacity);
+        }
+    }
+    public bool AmmoFull => Ammo == maxAmmoCapacity;
+    public int EmptyBulletCount => maxAmmoCapacity - ammo;      // 리로딩시 부족한 탄환수
     #endregion
 
     #region 나중에 풀매니저로 처리할 부분
     [SerializeField]
     private Bullet bulletPrefab;
     #endregion
+
+    private void Start()
+    {
+        Ammo = maxAmmoCapacity;     // 최대치로 넣어준다.
+    }
 
     private void Update()
     {
@@ -37,11 +62,23 @@ public class Weapon : MonoBehaviour
     {
         if (isShooting && delayCoroutine == false)      // 발사 쿨도 비어었고 버튼도 눌린 상태
         {
-            // 여기서 총알의 잔량도 확인하고 발사하지만 지금은 아님
-
-            OnShoot?.Invoke();  // 발사했어
-            ShootBullet();
-
+            // 총알잔량확인
+            if (Ammo >= bulletCount)
+            {
+                OnShoot?.Invoke();  // 발사했어
+                for (int i = 0; i < bulletCount; i++)
+                {
+                    ShootBullet();
+                    Ammo--;
+                    OnChangeAmmo?.Invoke(Ammo); // 나중에 UI
+                }
+            }
+            else
+            {
+                isShooting = false;
+                OnShootNoAmmo?.Invoke();
+                return;
+            }
             FinishOnShooting();     // 단발과 연사를 구분하기 위해서
         }
     }

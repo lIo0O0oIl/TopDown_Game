@@ -32,7 +32,7 @@ public class AudioPlayer : MonoBehaviour
         PlayClip(clip);
     }
 
-    private void PlayClip(AudioClip clip)
+    public void PlayClip(AudioClip clip)
     {
         audioSource.Stop();
         audioSource.clip = clip;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AgentMovement : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class AgentMovement : MonoBehaviour
     private float speed = 5f, accel = 50f, deAccel = 50f;       // 스피드와 자연스러움을 위한 액셀레이션
 
     private float currentSpeed;     // 현재 속도
+
+    public UnityEvent<float> OnVelocityChanged = null;
 
     private void Awake()
     {
@@ -47,6 +50,7 @@ public class AgentMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        OnVelocityChanged?.Invoke(currentSpeed);
         _rigidbody.velocity = moveDirection * currentSpeed;
     }
 }

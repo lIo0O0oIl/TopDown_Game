@@ -38,7 +38,15 @@ public class Bullet : MonoBehaviour
 
         isDead = true;      // 이렇게 하는 이유는 1개 이상의 물체에 출돌처리가 되지 않도록 하는 것임
 
-        ImpactScript inpact = Instantiate(bulletDtat.ObstacleImpactPrefab, transform.position, Quaternion.identity);
+        ImpactScript impact = Instantiate(bulletDtat.ObstacleImpactPrefab, transform.position, Quaternion.identity);
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 5f);
+
+        if (hit.collider != null)
+        {
+            Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 360f));
+            impact.SetPositionAndRotation(hit.point + (Vector2)transform.right * 0.5f, rot);   
+        }
 
         // 여기에 스케일과 포지션 잡아주는 부분이 있어야 한다.
 

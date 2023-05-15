@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AgentWeapon : MonoBehaviour
 {
@@ -8,6 +9,22 @@ public class AgentWeapon : MonoBehaviour
 
     protected WeaponRenderer weaponRenderer;
     protected Weapon weapon;
+
+    #region 탄환관련 로직
+    public UnityEvent<int, int> OnChangeTotalAmmo;
+    [SerializeField]
+    private int mazTotalAmmo = 9999, totalAmmo = 300;       // 최대 9999발, 지금은 300발
+
+    public int TotalAmmo
+    {
+        get => totalAmmo;
+        set
+        {
+            totalAmmo = Mathf.Clamp(value, 0, totalAmmo);
+            OnChangeTotalAmmo?.Invoke(weapon.Ammo, totalAmmo);
+        }
+    }
+    #endregion
 
     protected void Awake()
     {
