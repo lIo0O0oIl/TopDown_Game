@@ -15,9 +15,12 @@ public class Bullet : MonoBehaviour
     private Rigidbody2D rigid;
     private bool isDead = false;
 
+    private float radius;
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        radius = GetComponent<CapsuleCollider2D>().size.y * 0.5f;
     }
 
     private void FixedUpdate()
@@ -70,7 +73,7 @@ public class Bullet : MonoBehaviour
 
     private void OnHitEnemy()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 5f, 1 << LayerMask.NameToLayer("Enemy"));
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, transform.right, 5f, 1 << LayerMask.NameToLayer("Enemy"));
         if (hit.collider != null)
         {
             if (hit.collider.TryGetComponent<IDamageable>(out IDamageable health))
