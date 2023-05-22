@@ -39,7 +39,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _IsOutLine: 0
+    - _ShowBorderLanght: 0.05
+    - _ShowRate: -0.928
     - _Value: 0
     m_Colors:
     - _BlinkColor: {r: 2.5962026, g: 1.4443129, b: 1.2123775, a: 1}
+    - _BorderColor: {r: 16, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -16,6 +16,10 @@ public class EnemyBrain : MonoBehaviour
 
     public UnityEvent OnAttackButtonPress = null;       // 공격키가 눌렸을 때를 말함.
 
+    public bool IsActive = false;
+
+    private EnemyRenderer enemyRenderer;
+
     private void Awake()
     {
         List<AIState> states = transform.Find("AI").GetComponentsInChildren<AIState>().ToList();
@@ -24,12 +28,18 @@ public class EnemyBrain : MonoBehaviour
         {
             state.SetUp(transform);
         }
+        enemyRenderer = transform.Find("VisualSprite").GetComponent<EnemyRenderer>();
     }
 
     public void Move(Vector2 moveDirection, Vector2 targetPositoin)
     {
         OnMovementKeyPress?.Invoke(moveDirection.normalized);
         OnPointerPositionChange?.Invoke(targetPositoin);
+    }
+
+    public void Attack(Vector3 targetPos)
+    {
+
     }
 
     public void ChangeState(AIState nexState)
@@ -39,6 +49,15 @@ public class EnemyBrain : MonoBehaviour
 
     private void Update()
     {
+        #region 디버그 코드 나중에 지우기
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            enemyRenderer.ShowProcess(1.5f, () => IsActive = true);
+        }
+        #endregion
+        if (IsActive == false) return;
+
         currentState.UpdateState();
     }
+
 }

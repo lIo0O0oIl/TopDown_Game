@@ -19,4 +19,16 @@ public class InnerDistanceDecision : AIDecision
 
         return false;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (UnityEditor.Selection.activeGameObject == gameObject)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(transform.position, distance);
+            Gizmos.color = Color.white;
+        }
+    }
+#endif
 }
