@@ -13,7 +13,10 @@ public class AIState : MonoBehaviour
     {
         brain = parent.GetComponent<EnemyBrain>();
         GetComponents<AIAction>(ActionList);
+        ActionList.ForEach(a => a.SetUp(parent));
+
         GetComponentsInChildren<AITransition>(AItransitionList);
+        AItransitionList.ForEach(t => t.SetUp(parent));
     }
 
     // 상태를 계속 업데이트 해준다.

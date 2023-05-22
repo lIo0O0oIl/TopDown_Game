@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
 
     // SO 변경예정
     [SerializeField]
-    private BulletDtatSO bulletDtat;
+    private BulletDataSO bulletData;
 
     private float timeToLive = 0;
 
@@ -26,9 +26,9 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         timeToLive += Time.fixedDeltaTime;
-        rigid.MovePosition(transform.position + transform.right * bulletDtat.BulletSpeed * Time.deltaTime);      // 바라보고 있는 오른쪽으로 이동
+        rigid.MovePosition(transform.position + transform.right * bulletData.BulletSpeed * Time.deltaTime);      // 바라보고 있는 오른쪽으로 이동
 
-        if (timeToLive >= bulletDtat.LifeTime)     // 만약 타임투리브가 라이프 타임보다 크다면
+        if (timeToLive >= bulletData.LifeTime)     // 만약 타임투리브가 라이프 타임보다 크다면
         {
             isDead = true;
             Destroy(gameObject);        // 나중에 풀매니저로 바꿔야해
@@ -60,7 +60,7 @@ public class Bullet : MonoBehaviour
 
     private void OnHitObstacle()
     {
-        ImpactScript impact = Instantiate(bulletDtat.ObstacleImpactPrefab, transform.position, Quaternion.identity);
+        ImpactScript impact = Instantiate(bulletData.ObstacleImpactPrefab, transform.position, Quaternion.identity);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 5f, 1 << LayerMask.NameToLayer("Obstacle"));
 
@@ -78,12 +78,12 @@ public class Bullet : MonoBehaviour
         {
             if (hit.collider.TryGetComponent<IDamageable>(out IDamageable health))
             {
-                health.GetHit(bulletDtat.Damage, hit.point, hit.normal);
+                health.GetHit(bulletData.Damage, hit.point, hit.normal);
 
                 Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 360f));
                 Vector2 randomOffset = Random.insideUnitCircle * 0.5f;      // 저건 유닛이 있어서 길이 1짜리로 정규화 되어있음. 반지름이 1인 원 안의 좌표를 랜덤으로 줌
 
-                ImpactScript impact = Instantiate(bulletDtat.EnemyImpactPrefab, transform.position, Quaternion.identity);       // 같은곳은 노잼이니까 랜덤으로 생성하자!
+                ImpactScript impact = Instantiate(bulletData.EnemyImpactPrefab, transform.position, Quaternion.identity);       // 같은곳은 노잼이니까 랜덤으로 생성하자!
                 impact.SetPositionAndRotation(hit.point + randomOffset, rot);
             }
         }

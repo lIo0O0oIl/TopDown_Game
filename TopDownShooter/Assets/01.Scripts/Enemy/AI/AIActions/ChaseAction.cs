@@ -6,7 +6,8 @@ public class ChaseAction : AIAction
 {
     public override void TakeAction()
     {
-        // 아직 무브가 없어서 아무것도 못함
-        
+        Vector2 dir = actionData.LastSpotPosition - enemyBrain.transform.position;
+
+        enemyBrain.Move(moveDirection:dir.normalized, targetPositoin:actionData.LastSpotPosition);
     }
 }

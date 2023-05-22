@@ -20,12 +20,25 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private int currentHealth = 100;
     private bool isDead = false;
 
+    private EnemyBrain brain;
+    private AIActionData aiActionData;
+
+    private void Awake()
+    {
+        brain = GetComponent<EnemyBrain>();
+        aiActionData = transform.Find("AI").GetComponent<AIActionData>();
+    }
+
     public void GetHit(int damage, Vector3 hitPoint, Vector3 normal)
     {
         if (isDead) return;
 
         currentHealth -= damage;
         OnGetHit?.Invoke();
+
+        aiActionData.LastSpotPosition = brain.PlayerTrm.position;       // 마지막으로 맞았을 때 위치
+        aiActionData.IsArrived = false;
+
         if (currentHealth <= 0)
         {
             DeadProcess();

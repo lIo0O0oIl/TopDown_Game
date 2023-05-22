@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName= "SO/BulletData")]
-public class BulletDtatSO : ScriptableObject
+public class BulletDataSO : ScriptableObject
 {
     public int Damage = 1;
     public float BulletSpeed = 20;

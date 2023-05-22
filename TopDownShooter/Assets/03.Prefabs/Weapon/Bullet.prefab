@@ -157,5 +157,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3a7562e9a27a80459a36287d4db7d28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsEnemy: 0
-  bulletDtat: {fileID: 11400000, guid: e83332f1938387947ae2e4c5484f9601, type: 2}
+  IsEnemy: 1
+  bulletData: {fileID: 11400000, guid: e83332f1938387947ae2e4c5484f9601, type: 2}

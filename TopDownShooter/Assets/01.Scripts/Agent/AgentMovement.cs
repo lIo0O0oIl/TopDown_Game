@@ -9,7 +9,7 @@ public class AgentMovement : MonoBehaviour
     private Vector2 moveDirection;
 
     [SerializeField]
-    private float speed = 5f, accel = 50f, deAccel = 50f;       // 스피드와 자연스러움을 위한 액셀레이션
+    private MovemantDataSO movementData;
 
     private float currentSpeed;     // 현재 속도
 
@@ -38,14 +38,14 @@ public class AgentMovement : MonoBehaviour
     {
         if (moveInput.sqrMagnitude > 0)     // 백터 길이의 제곱임 근데 이제 제곱근을 안넣고 그 안에 값만 가져오는. 즉 moveInput 이 길이가 있다면 참인 것임
         {
-            currentSpeed += accel * Time.deltaTime;
+            currentSpeed += movementData.Accle * Time.deltaTime;
         }
         else
         {
-            currentSpeed -= deAccel * Time.deltaTime;
+            currentSpeed -= movementData.DeAccle * Time.deltaTime;
         }
 
-        return Mathf.Clamp(currentSpeed, 0, speed);
+        return Mathf.Clamp(currentSpeed, 0, movementData.MaxSpeed);
     }
 
     private void FixedUpdate()
