@@ -38,6 +38,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Dissolve: 0.447
+    - _DissolveOutline: 0.05
+    - _IsDissolve: 0
     - _IsOutLine: 0
     - _ShowBorderLanght: 0.05
     - _ShowRate: -0.928
@@ -45,4 +48,5 @@ Material:
     m_Colors:
     - _BlinkColor: {r: 2.5962026, g: 1.4443129, b: 1.2123775, a: 1}
     - _BorderColor: {r: 16, g: 0, b: 0, a: 1}
+    - _DissolveColor: {r: 21.361254, g: 0.111839026, b: 0, a: 1}
   m_BuildTextureStacks: []

@@ -50,4 +50,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         isDead = true;
         OnDie?.Invoke();
     }
+
+    public void Init()      // √ ±‚»≠
+    {
+        isDead = false;
+        currentHealth = maxHealth;
+    }
 }

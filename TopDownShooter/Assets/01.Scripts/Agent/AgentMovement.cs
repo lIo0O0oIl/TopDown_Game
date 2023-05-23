@@ -48,6 +48,12 @@ public class AgentMovement : MonoBehaviour
         return Mathf.Clamp(currentSpeed, 0, movementData.MaxSpeed);
     }
 
+    public void StopImmediately()
+    {
+        moveDirection = Vector2.zero;
+        currentSpeed = 0;
+    }
+
     private void FixedUpdate()
     {
         OnVelocityChanged?.Invoke(currentSpeed);

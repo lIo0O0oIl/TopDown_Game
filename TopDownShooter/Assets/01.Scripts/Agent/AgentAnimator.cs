@@ -8,6 +8,7 @@ public class AgentAnimator : MonoBehaviour
     protected Animator animator;
     protected readonly int walkBoolHash = Animator.StringToHash("Walk");
     protected readonly int deathTriggerHash = Animator.StringToHash("Death");
+    protected readonly int isDeadHash = Animator.StringToHash("Is_dead");
 
     public UnityEvent OnFootStep = null;
 
@@ -26,6 +27,11 @@ public class AgentAnimator : MonoBehaviour
         {
             animator.ResetTrigger(deathTriggerHash);
         }
+    }
+
+    public void SetIsDead(bool value)
+    {
+        animator.SetBool(isDeadHash, value);
     }
 
     public void AnimationPlayer(float velocity)

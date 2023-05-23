@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EnemyBrain : MonoBehaviour
+public class EnemyBrain : PoolableMono
 {
     public Transform PlayerTrm;
 
@@ -16,9 +16,17 @@ public class EnemyBrain : MonoBehaviour
 
     public UnityEvent OnAttackButtonPress = null;       // 공격키가 눌렸을 때를 말함.
 
-    public bool IsActive = false;
+    public UnityEvent OnInit = null;        // 초기화 되었을 때 발생함
+
+    public bool IsActive { get; set; } = false;     // 프로퍼티가 되면서 유니티 이벤트에서 사용이 가능함
 
     private EnemyRenderer enemyRenderer;
+    private EnemyAttack enemyAttack;
+    public EnemyAttack EnemyAttackCompo => enemyAttack;
+
+    private CapsuleCollider2D bodyCollider;
+
+    private AIState initState;
 
     private void Awake()
     {
@@ -29,6 +37,22 @@ public class EnemyBrain : MonoBehaviour
             state.SetUp(transform);
         }
         enemyRenderer = transform.Find("VisualSprite").GetComponent<EnemyRenderer>();
+        enemyAttack = GetComponent<EnemyAttack>();
+        bodyCollider = GetComponent<CapsuleCollider2D>();
+        initState = currentState;       // 초기값을 저장해두고 init 할 때 되돌려주기
+    }
+
+    public void SetDead()
+    {
+        IsActive = false;
+        bodyCollider.enabled = false;
+        StartCoroutine(DealyDissolve(1f));
+    }
+
+    private IEnumerator DealyDissolve(float time)
+    {
+        yield return new WaitForSeconds(time);
+        enemyRenderer.StartDissolve(2f);
     }
 
     public void Move(Vector2 moveDirection, Vector2 targetPositoin)
@@ -37,9 +61,9 @@ public class EnemyBrain : MonoBehaviour
         OnPointerPositionChange?.Invoke(targetPositoin);
     }
 
-    public void Attack(Vector3 targetPos)
+    public void Attack(int damage, Vector3 targetPos)
     {
-
+        enemyAttack.Attack(damage, targetPos);
     }
 
     public void ChangeState(AIState nexState)
@@ -48,16 +72,34 @@ public class EnemyBrain : MonoBehaviour
     }
 
     private void Update()
-    {
+    {/*
         #region 디버그 코드 나중에 지우기
         if (Input.GetKeyDown(KeyCode.Q))
         {
             enemyRenderer.ShowProcess(1.5f, () => IsActive = true);
         }
-        #endregion
+        #endregion*/
         if (IsActive == false) return;
 
         currentState.UpdateState();
     }
 
+    public void ShowProgress()
+    {
+        enemyRenderer.ShowProcess(1f, () => IsActive = true);
+    }
+
+    public void GotoPool()
+    {
+        PoolManager.Instance.Push(this);        // 풀로 보내준다.
+    }
+
+    public override void Init()
+    {
+        PlayerTrm = GameManager.Instance.PlayerTrm;     // 타겟 설정 완료
+        IsActive = false;
+        bodyCollider.enabled = true;
+        currentState = initState;       // 재활용할때는 초기 상태로 변경해야 한다.
+        OnInit?.Invoke();
+    }
 }
