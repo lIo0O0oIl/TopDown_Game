@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : PoolableMono
 {
     public bool IsEnemy;
 
@@ -15,12 +15,18 @@ public class Bullet : MonoBehaviour
     private Rigidbody2D rigid;
     private bool isDead = false;
 
-    private float radius;
+    //private float radius;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
-        radius = GetComponent<CapsuleCollider2D>().size.y * 0.5f;
+        //radius = GetComponent<CapsuleCollider2D>().size.y * 0.5f;
+    }
+
+    public override void Init()
+    {
+        timeToLive = 0;
+        isDead = false;
     }
 
     private void FixedUpdate()
@@ -31,7 +37,7 @@ public class Bullet : MonoBehaviour
         if (timeToLive >= bulletData.LifeTime)     // 만약 타임투리브가 라이프 타임보다 크다면
         {
             isDead = true;
-            Destroy(gameObject);        // 나중에 풀매니저로 바꿔야해
+            PoolManager.Instance.Push(this);
         }
     }
 
@@ -39,28 +45,27 @@ public class Bullet : MonoBehaviour
     {
         if (isDead) return;
 
-        isDead = true;      // 이렇게 하는 이유는 1개 이상의 물체에 출돌처리가 되지 않도록 하는 것임
-
         if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
             OnHitObstacle();
-            Destroy(gameObject);
+            isDead = true;      // 이렇게 하는 이유는 1개 이상의 물체에 출돌처리가 되지 않도록 하는 것임
+            PoolManager.Instance.Push(this);
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            OnHitEnemy();
-            Destroy(gameObject);
+            OnHitEnemy(collision);
+            isDead = true;      // 이렇게 하는 이유는 1개 이상의 물체에 출돌처리가 되지 않도록 하는 것임
+            PoolManager.Instance.Push(this);
         }
 
         // 여기에 스케일과 포지션 잡아주는 부분이 있어야 한다.
 
-        Destroy(gameObject);    // 부딪히면 사먕
     }
 
     private void OnHitObstacle()
     {
-        ImpactScript impact = Instantiate(bulletData.ObstacleImpactPrefab, transform.position, Quaternion.identity);
+        ImpactScript impact = PoolManager.Instance.Pop(bulletData.ObstacleImpactPrefab.name) as ImpactScript;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 5f, 1 << LayerMask.NameToLayer("Obstacle"));
 
@@ -71,21 +76,25 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void OnHitEnemy()
+    private void OnHitEnemy(Collider2D col)
     {
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, transform.right, 5f, 1 << LayerMask.NameToLayer("Enemy"));
-        if (hit.collider != null)
+        if (col.TryGetComponent<IDamageable>(out IDamageable health))
         {
-            if (hit.collider.TryGetComponent<IDamageable>(out IDamageable health))
-            {
-                health.GetHit(bulletData.Damage, hit.point, hit.normal);
+            Vector3 point = col.transform.position;
 
-                Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 360f));
-                Vector2 randomOffset = Random.insideUnitCircle * 0.5f;      // 저건 유닛이 있어서 길이 1짜리로 정규화 되어있음. 반지름이 1인 원 안의 좌표를 랜덤으로 줌
+            health.GetHit(bulletData.Damage, point, transform.right * -1);
 
-                ImpactScript impact = Instantiate(bulletData.EnemyImpactPrefab, transform.position, Quaternion.identity);       // 같은곳은 노잼이니까 랜덤으로 생성하자!
-                impact.SetPositionAndRotation(hit.point + randomOffset, rot);
-            }
+            Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 360f));
+            Vector2 randomOffset = Random.insideUnitCircle * 0.5f;      // 저건 유닛이 있어서 길이 1짜리로 정규화 되어있음. 반지름이 1인 원 안의 좌표를 랜덤으로 줌
+
+            ImpactScript impact = PoolManager.Instance.Pop(bulletData.EnemyImpactPrefab.name) as ImpactScript;       // 랜덤으로 생성하자
+            impact.SetPositionAndRotation(point + (Vector3)randomOffset, rot);
+        }
+
+        if (col.TryGetComponent<AgentMovement>(out AgentMovement movement))
+        {
+            movement.Knockback(transform.right * bulletData.KnockbackPower, bulletData.knockbackTime);
         }
     }
+
 }

@@ -111,7 +111,8 @@ public class Weapon : MonoBehaviour
         float spread = Random.Range(-spreadAngle, spreadAngle);
         rotation = rotation * Quaternion.Euler(0, 0, spread);
 
-        Bullet b = Instantiate(bulletPrefab, position, rotation);     // 머즐 회전량으로 포지션에 총알 생성
+        Bullet b = PoolManager.Instance.Pop(bulletPrefab.name) as Bullet;  // 머즐 회전량으로 포지션에 총알 생성
+        b.transform.SetPositionAndRotation(position, rotation);
         b.IsEnemy = false;      // 적 총알이 아니니까. 내꺼니까
     }
 

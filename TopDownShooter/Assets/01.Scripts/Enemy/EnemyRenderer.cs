@@ -29,7 +29,8 @@ public class EnemyRenderer : AgentRenderer
         Material mat = spriteRenderer.material;
         mat.SetInt(isDissolveHash, 0);
         mat.SetFloat(showRateHash, -1f);
-        transform.rotation = Quaternion.identity;
+        transform.rotation =  Quaternion.Euler(0, 0, 0);
+        spriteRenderer.color = Color.white;
     }
 
     public void StartDissolve(float time)

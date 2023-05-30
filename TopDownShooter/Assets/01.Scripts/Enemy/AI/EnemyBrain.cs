@@ -26,17 +26,24 @@ public class EnemyBrain : PoolableMono
 
     private CapsuleCollider2D bodyCollider;
 
+    private AIActionData aiActionData;
+
+    private AgentAnimator agentAnimator;
+    public AgentAnimator AgentAnimatorCompo => agentAnimator;
+
     private AIState initState;
 
     private void Awake()
     {
         List<AIState> states = transform.Find("AI").GetComponentsInChildren<AIState>().ToList();
+        aiActionData = transform.Find("AI").GetComponent<AIActionData>();
 
-        foreach(AIState state in states)
+        foreach (AIState state in states)
         {
             state.SetUp(transform);
         }
         enemyRenderer = transform.Find("VisualSprite").GetComponent<EnemyRenderer>();
+        agentAnimator = transform.Find("VisualSprite").GetComponent<AgentAnimator>();
         enemyAttack = GetComponent<EnemyAttack>();
         bodyCollider = GetComponent<CapsuleCollider2D>();
         initState = currentState;       // 초기값을 저장해두고 init 할 때 되돌려주기
@@ -86,7 +93,11 @@ public class EnemyBrain : PoolableMono
 
     public void ShowProgress()
     {
-        enemyRenderer.ShowProcess(1f, () => IsActive = true);
+        enemyRenderer.ShowProcess(1f, () => {
+            IsActive = true;
+            currentState = initState;
+            aiActionData.Init();
+            });
     }
 
     public void GotoPool()
@@ -96,10 +107,11 @@ public class EnemyBrain : PoolableMono
 
     public override void Init()
     {
+        transform.rotation = Quaternion.identity;   // 회전 원래대로
         PlayerTrm = GameManager.Instance.PlayerTrm;     // 타겟 설정 완료
         IsActive = false;
         bodyCollider.enabled = true;
-        currentState = initState;       // 재활용할때는 초기 상태로 변경해야 한다.
+        agentAnimator.SetAnimationSpeed(1f);
         OnInit?.Invoke();
     }
 }

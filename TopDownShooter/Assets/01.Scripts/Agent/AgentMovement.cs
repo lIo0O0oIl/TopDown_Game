@@ -15,9 +15,17 @@ public class AgentMovement : MonoBehaviour
 
     public UnityEvent<float> OnVelocityChanged = null;
 
+    private bool isKB = false; // 현재 넉백 당하고 있는가?
+    private Vector2 KBDirection; // 넉백되는 방향
+    private float KBTime;
+    private float currentKBTime;    // 현재 넉백 진행시간
+
+    private EnemyBrain enemyBrain;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        enemyBrain = GetComponent<EnemyBrain>();
     }
 
     public void Movement(Vector2 dir)
@@ -48,6 +56,23 @@ public class AgentMovement : MonoBehaviour
         return Mathf.Clamp(currentSpeed, 0, movementData.MaxSpeed);
     }
 
+    private void CalculateKB()
+    {
+        currentKBTime += Time.fixedDeltaTime;
+        float percent = currentKBTime / KBTime;
+        Vector2 moveDir = Vector2.Lerp(KBDirection, moveDirection * currentSpeed, percent);
+
+        moveDirection = moveDir.normalized;     // 방향
+        currentSpeed = moveDir.magnitude;   // 길이
+
+        if (currentKBTime >= KBTime)
+        {
+            currentKBTime = 0;
+            isKB = false;
+            StopImmediately();  // 넉백 종료
+        }
+    }
+
     public void StopImmediately()
     {
         moveDirection = Vector2.zero;
@@ -56,7 +81,22 @@ public class AgentMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isKB)
+        {
+            CalculateKB();      // 넉백중일 때는 넉백당하는 속도와 방향을 구하세요.
+        }
         OnVelocityChanged?.Invoke(currentSpeed);
         _rigidbody.velocity = moveDirection * currentSpeed;
+    }
+
+    public void Knockback(Vector2 direction, float time, bool forceMode = false)
+    {
+        if (enemyBrain.IsActive == true || forceMode == true)        // 살아 있다면 넉백해주기, 또는 죽었어도 모드가 트루면 작동
+        {
+            isKB = true;
+            KBDirection = direction;
+            KBTime = time;
+            currentKBTime = 0;
+        }
     }
 }

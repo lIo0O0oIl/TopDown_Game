@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class ImpactScript : MonoBehaviour
+public class ImpactScript : PoolableMono
 {
     protected AudioSource audioSource;
 
@@ -14,7 +14,7 @@ public class ImpactScript : MonoBehaviour
 
     public void DestroyAfterAnimation()
     {
-        Destroy(gameObject);
+        PoolManager.Instance.Push(this);
     }
 
     public virtual void SetPositionAndRotation(Vector3 pos, Quaternion rot)
@@ -29,5 +29,10 @@ public class ImpactScript : MonoBehaviour
     public virtual void SetLocalScale(Vector3 scale)
     {
         transform.localPosition = scale;
+    }
+
+    public override void Init()
+    {
+
     }
 }
