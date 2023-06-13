@@ -1194,6 +1194,7 @@ GameObject:
   - component: {fileID: 7137050919547804700}
   - component: {fileID: 7137050919547804674}
   - component: {fileID: 7137050919547804675}
+  - component: {fileID: 8038765780186353972}
   m_Layer: 6
   m_Name: HitFeedback
   m_TagString: Untagged
@@ -1242,6 +1243,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 7137050919113590099}
   blinkTime: 0.1
+--- !u!114 &8038765780186353972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7137050919547804701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d60aac75ac6c9e1428a5bcf6c5416ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionData: {fileID: 7137050918170547507}
+  sizeFactor: 0.5
 --- !u!1 &7137050919785893418
 GameObject:
   m_ObjectHideFlags: 0

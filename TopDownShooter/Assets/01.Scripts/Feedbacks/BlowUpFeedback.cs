@@ -43,5 +43,24 @@ public class BlowUpFeedback : Feedback
         tweenSeq = DOTween.Sequence();
         tweenSeq.Append(brain.transform.DORotate(new Vector3(0, 0, rotate), 0.5f));
         tweenSeq.Join(spriteRenderer.DOColor(deathColor, 0.6f));
+
+        StartCoroutine(Blood());
+    }
+
+    IEnumerator Blood()
+    {
+        int count = 0;
+
+        while (true)
+        {
+            TextureParticleManager.Instance.SpawnBlood(transform.position, actionData.HitNormal, 0.5f);
+            yield return new WaitForSeconds(0.1f);
+            count++;
+            if (count > 5)
+            {
+                break;
+            }
+        }
+        yield return null;
     }
 }

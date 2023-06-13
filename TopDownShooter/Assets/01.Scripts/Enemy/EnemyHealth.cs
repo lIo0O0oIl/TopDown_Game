@@ -33,14 +33,15 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (isDead || brain.IsActive == false) return;
 
-        currentHealth -= damage;
-        OnGetHit?.Invoke();
-
         aiActionData.HitPoint = hitPoint;
         aiActionData.HitNormal = normal;
 
         aiActionData.LastSpotPosition = brain.PlayerTrm.position;       // 마지막으로 맞았을 때 위치
         aiActionData.IsArrived = false;
+
+        currentHealth -= damage;
+
+        OnGetHit?.Invoke();
 
         if (currentHealth <= 0)
         {
