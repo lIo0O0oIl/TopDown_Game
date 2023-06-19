@@ -5,7 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName= "SO/BulletData")]
 public class BulletDataSO : ScriptableObject
 {
-    public int Damage = 1;
+    public int MinDamage = 1;
+    public int MaxDamage = 5;
     public float BulletSpeed = 20;
     public ImpactScript ObstacleImpactPrefab;       // 장애물에 맞았을 때 나올 프리팹
     public ImpactScript EnemyImpactPrefab;       // 적에 맞았을 때 나올 프리팹
