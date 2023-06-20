@@ -18,6 +18,7 @@ public class EnemyBrain : PoolableMono
 
     public UnityEvent OnInit = null;        // 초기화 되었을 때 발생함
 
+    [field: SerializeField]
     public bool IsActive { get; set; } = false;     // 프로퍼티가 되면서 유니티 이벤트에서 사용이 가능함
 
     private EnemyRenderer enemyRenderer;
@@ -68,9 +69,9 @@ public class EnemyBrain : PoolableMono
         OnPointerPositionChange?.Invoke(targetPositoin);
     }
 
-    public void Attack(int damage, Vector3 targetPos)
+    public void Attack(Vector3 targetPos)
     {
-        enemyAttack.Attack(damage, targetPos);
+        enemyAttack.Attack(targetPos);
     }
 
     public void ChangeState(AIState nexState)

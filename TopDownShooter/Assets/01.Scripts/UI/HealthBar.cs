@@ -35,14 +35,14 @@ public class HealthBar : MonoBehaviour
         barBackground = transform.Find("BarBackground");
         barSize = barBackground.localScale.x;
 
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     private void CalcSeparator(int value)
     {
         sepMesh = new Mesh();
         SpriteRenderer sr = barBackground.GetComponent<SpriteRenderer>();
-        int sepCount = Mathf.FloorToInt((float)value / healthAmountPerSep);     // 구분바가 몇 개 그려져야 하는지 갯수
+        int sepCount = Mathf.CeilToInt((float)value / healthAmountPerSep);     // 구분바가 몇 개 그려져야 하는지 갯수
 
         float boundSize = sr.bounds.size.x;
         float calcSize = (boundSize / sepCount) * 0.1f;
@@ -101,7 +101,7 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
@@ -113,5 +113,5 @@ public class HealthBar : MonoBehaviour
         {
             SetHealth(health - 5);
         }
-    }
+    }*/
 }

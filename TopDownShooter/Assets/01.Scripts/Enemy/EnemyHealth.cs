@@ -16,6 +16,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private int maxHealth = 100;
     #endregion
 
+    private HealthBar healthBar;
+
     [SerializeField]
     private int currentHealth = 100;
     private bool isDead = false;
@@ -27,6 +29,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         brain = GetComponent<EnemyBrain>();
         aiActionData = transform.Find("AI").GetComponent<AIActionData>();
+        healthBar = transform.Find("HealthBar").GetComponent<HealthBar>();
     }
 
     public void GetHit(int damage, Vector3 hitPoint, Vector3 normal)
@@ -42,6 +45,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         currentHealth -= damage;
 
         OnGetHit?.Invoke();
+        if (healthBar.gameObject.activeSelf == false)       // 처음으로 피격당한거면
+        {
+            healthBar.gameObject.SetActive(true);
+        }
+
+        healthBar.SetHealth(currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -52,6 +61,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void DeadProcess()
     {
         isDead = true;
+        healthBar.gameObject.SetActive(false);
         OnDie?.Invoke();
     }
 
@@ -59,5 +69,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         isDead = false;
         currentHealth = maxHealth;
+
+        healthBar.SetHealth(currentHealth);
+        healthBar.gameObject.SetActive(false);
     }
 }

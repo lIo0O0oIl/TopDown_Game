@@ -12,15 +12,24 @@ public class EnemyMeleeAttack : EnemyAttack
 
     [SerializeField]
     private LayerMask whatIsEnemy;
+    [SerializeField]
+    private int damage = 1;
 
-    public override void Attack(int damage, Vector3 target)
+    [SerializeField]
+    private float coolTime = 1f;
+    private float lastAttackTime = 0;
+
+    public override void Attack(Vector3 target)
     {
+        if (lastAttackTime + coolTime < Time.time) return;
+
         Vector2 dir = target - transform.position;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, dir.normalized, range, whatIsEnemy);
         if (hit.collider != null)
         {
             if (hit.collider.TryGetComponent<IDamageable>(out IDamageable health))
             {
+                lastAttackTime = Time.time;
                 health.GetHit(damage, hit.point, hit.normal);
             }
         }
