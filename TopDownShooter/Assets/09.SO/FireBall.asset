@@ -15,8 +15,8 @@ MonoBehaviour:
   MinDamage: 1
   MaxDamage: 1
   BulletSpeed: 3
-  ObstacleImpactPrefab: {fileID: 4795048074715928548, guid: 505f2f08d23b06d4db66b1f2828e2722, type: 3}
-  EnemyImpactPrefab: {fileID: 4676355258074038757, guid: 40b9083786ed9f8448051eb890fa73cd, type: 3}
-  LifeTime: 2
+  ObstacleImpactPrefab: {fileID: 3596147432273392326, guid: 29a36f10c6e847b44bf70c0d44114337, type: 3}
+  EnemyImpactPrefab: {fileID: 0}
+  LifeTime: 1.5
   KnockbackPower: 5
   knockbackTime: 0.8

@@ -18,6 +18,8 @@ public class FireBall : PoolableMono
     [SerializeField]
     private BulletDataSO bulletData;
 
+    private float currentLifeTime = 0;
+
     private void Awake()
     {
         _light = transform.Find("BallLight").GetComponent<Light2D>();
@@ -32,6 +34,8 @@ public class FireBall : PoolableMono
 
     public void Fire(Vector2 direction)
     {
+        currentLifeTime = 0;
+        isDead = false;
         _rigidbody.velocity = direction * bulletData.BulletSpeed;
     }
 
@@ -40,11 +44,62 @@ public class FireBall : PoolableMono
         _light.intensity = 0;
         transform.localScale = Vector3.one; ;
         _rigidbody.velocity = Vector2.zero;
-        isDead = false;
+        isDead = true;
+    }
+
+    private void Update()
+    {
+        if (isDead) return;
+        currentLifeTime += Time.deltaTime;
+        if (currentLifeTime >= bulletData.LifeTime)
+        {
+            HitProcess();
+            isDead = true;
+            PoolManager.Instance.Push(this);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 많이 뭐 해주기
+        if ( ((1 << collision.gameObject.layer) & whatIsEnemy) > 0){
+            HitProcess();
+            isDead = true;
+            PoolManager.Instance.Push(this);
+        }
     }
+
+    [SerializeField]
+    private float expRadius = 1.15f;
+    private void HitProcess()
+    {
+        ImpactScript impact = PoolManager.Instance.Pop(bulletData.ObstacleImpactPrefab.name) as ImpactScript;
+        Quaternion rot = Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360f)));
+        Vector3 pos = transform.position + transform.right * 0.5f;
+
+        impact.SetPositionAndRotation(pos, rot);
+
+        Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, expRadius, whatIsEnemy);
+
+        foreach (Collider2D col in cols)
+        {
+            if (col.TryGetComponent(out IDamageable health))
+            {
+                Vector3 normal = (transform.position - col.transform.position).normalized;
+                int damage = Random.Range(bulletData.MinDamage, bulletData.MaxDamage);
+                health.GetHit(damage, transform.position, normal);
+            }
+        }
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (UnityEditor.Selection.activeGameObject == gameObject)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(transform.position, expRadius);
+            Gizmos.color = Color.white;
+        }
+    }
+#endif
 }

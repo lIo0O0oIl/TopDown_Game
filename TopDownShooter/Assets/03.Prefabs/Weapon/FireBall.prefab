@@ -272,5 +272,6 @@ MonoBehaviour:
   LightMaxIntensity: 2.5
   whatIsEnemy:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 384
   bulletData: {fileID: 11400000, guid: c8c380537e1201041b4d2c0a69812d67, type: 2}
+  expRadius: 2
